@@ -12,6 +12,18 @@ type Context = String -- @<context>
 
 data Date = Date Int Int Int
 
+instance Eq Date where
+    (Date m1 d1 y1) == (Date m2 d2 y2) = m1 == m2 
+        && d1 == d2 && y1 == y2
+
+instance Ord Date where
+    compare (Date m1 d1 y1) (Date m2 d2 y2) =
+        if y1 /= y2
+        then compare y1 y2
+        else if m1 /= m2
+             then compare m1 m2
+             else compare d1 d2
+
 -- pretty printing
 instance Show Date where
     show (Date month day year) = show month
@@ -28,6 +40,7 @@ instance Show Tasks where
               showPriority Nothing = ""
               showDate (Just d) = show d ++ " "
               showDate Nothing = ""
+
 
 
 
