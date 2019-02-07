@@ -23,9 +23,12 @@ instance Ord Date where
 
 -- pretty printing
 instance Show Date where
-    show (Date month day year) = show month
-        ++ "-" ++ show day
+    show (Date month day year) = showDD month
+        ++ "-" ++ showDD day
         ++ "-" ++ show year
+        where showDD num = if num < 10
+                           then "0" ++ show num
+                           else show num
 
 -- tasks are either completed or not
 data Task = Incomplete (Maybe Priority) (Maybe Date) [Project] [Context] String
