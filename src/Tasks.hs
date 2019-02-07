@@ -1,9 +1,6 @@
 module Tasks where
 
--- tasks are either completed or not
-data Tasks = Incomplete (Maybe Priority) (Maybe Date) [Project] [Context] String
-     | Completed Date Tasks
-
+import Utils (subsetOf)
 
 -- tasks reference metadata tokens
 type Priority = Char -- (A) is high, (B) is lower, ...
@@ -30,7 +27,11 @@ instance Show Date where
         ++ "-" ++ show day
         ++ "-" ++ show year
 
-instance Show Tasks where
+-- tasks are either completed or not
+data Task = Incomplete (Maybe Priority) (Maybe Date) [Project] [Context] String
+        | Completed Date Task
+
+instance Show Task where
     show (Completed date task) = "x " ++ (show date) ++ " " ++ (show task)
     show (Incomplete mPriority mDate _ _ str) =
             (showPriority mPriority) 
@@ -40,6 +41,12 @@ instance Show Tasks where
               showPriority Nothing = ""
               showDate (Just d) = show d ++ " "
               showDate Nothing = ""
+
+-- filtering functions
+filterProjects :: [Project] -> [Task] -> [Task]
+filterProjects px = filter projectFilter
+    where projectFilter (Incomplete _ _ projs _ _) = px `subsetOf` projs
+          projectFilter (Completed _ t) = projectFilter t
 
 
 
